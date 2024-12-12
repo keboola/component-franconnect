@@ -1,1 +1,1 @@
-https://github.com/keboola/ex-franconnect
+https://github.com/keboola/component-franconnect

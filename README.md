@@ -1,4 +1,4 @@
-ex-franconnect
+component-franconnect
 =============
 
 Description
@@ -63,8 +63,8 @@ Clone this repository, init the workspace and run the component with following
 command:
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-git clone https://github.com/keboola/ex-franconnect ex_franconnect
-cd ex_franconnect
+git clone https://github.com/keboola/componet-franconnect componet_franconnect
+cd componet_franconnect
 docker-compose build
 docker-compose run --rm dev
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
