@@ -1,0 +1,1 @@
+https://github.com/keboola/ex-franconnect/blob/master/LICENSE.md
