@@ -2,95 +2,95 @@
 Template Component main class.
 
 """
-import csv
-from datetime import datetime
+import json
 import logging
 
 from keboola.component.base import ComponentBase
 from keboola.component.exceptions import UserException
 
+from client.token_api import FranconnectTokenAPIClient
+from client.info_manager_api import InfoManagerAPIClient
 from configuration import Configuration
 
 
+KEY_CREDENTIALS = 'credentials'
+KEY_RETRIEVE_SETTINGS = 'retrieveSettings'
+REQUIRED_PARAMETERS = []
+
+
 class Component(ComponentBase):
-    """
-        Extends base class for general Python components. Initializes the CommonInterface
-        and performs configuration validation.
-
-        For easier debugging the data folder is picked up by default from `../data` path,
-        relative to working directory.
-
-        If `debug` parameter is present in the `config.json`, the default logger is set to verbose DEBUG mode.
-    """
-
     def __init__(self):
         super().__init__()
+
+        self.validate_configuration_parameters(REQUIRED_PARAMETERS)
+
+        parameters = self.configuration.parameters
+        self.user_credentials = parameters.get(KEY_CREDENTIALS, {})
+        self.retrieve_settings = parameters.get(KEY_RETRIEVE_SETTINGS, {})
 
     def run(self):
         """
         Main execution code
         """
+        params = Configuration(**self.configuration.parameters) # noqa F841
+        self._init_clients()
+        # TODO: dodělat run metodu
 
-        # ####### EXAMPLE TO REMOVE
-        # check for missing configuration parameters
-        params = Configuration(**self.configuration.parameters)
+    def _init_clients(self):
+        x_tenant_id = self.user_credentials.get('xTenantId')
+        login = self.user_credentials.get('login')
+        password = self.user_credentials.get('password')
+        client_secret = self.user_credentials.get('clientSecret')
+        token_client = FranconnectTokenAPIClient(login, password, x_tenant_id, client_secret)
 
-        # Access parameters in configuration
-        if params.print_hello:
-            logging.info("Hello World")
+        authorization = self.configuration.config_data["authorization"]
+        authorization_credentials = authorization["oauth_api"]["credentials"]
 
-        # get input table definitions
-        input_tables = self.get_input_tables_definitions()
-        for table in input_tables:
-            logging.info(f'Received input table: {table.name} with path: {table.full_path}')
+        if not authorization.get("oauth_api"):
+            new_access_token, new_refresh_token = token_client.generate_access_token()
+            self.write_state_file({
+                "#refresh_token": new_refresh_token,
+                "auth_id": authorization_credentials.get("id", "")
+            })
+            self.retrieve_client = InfoManagerAPIClient(x_tenant_id, new_access_token)
 
-        if len(input_tables) == 0:
-            raise UserException("No input tables found")
+        else:
+            encrypted_data = json.loads(authorization_credentials["#data"])
+            state_file = self.get_state_file()
+            refresh_token_from_state_file = state_file.get("#refresh_token")
+            auth_id = state_file.get("auth_id")
 
-        # get last state data/in/state.json from previous run
-        previous_state = self.get_state_file()
-        logging.info(previous_state.get('some_parameter'))
+            refresh_token = self._set_refresh_token(
+                auth_id,
+                refresh_token_from_state_file,
+                encrypted_data,
+                authorization_credentials
+            )
+            updated_access_token, updated_refresh_token = token_client.refresh_access_token(refresh_token)
+            self.write_state_file({
+                "#refresh_token": updated_refresh_token,
+                "auth_id": authorization_credentials.get("id", "")
+            })
+            self.retrieve_client = InfoManagerAPIClient(x_tenant_id, updated_access_token)
 
-        # Create output table (Table definition - just metadata)
-        table = self.create_out_table_definition('output.csv', incremental=True, primary_key=['timestamp'])
+    @staticmethod
+    def _set_refresh_token(auth_id, refresh_token, encrypted_data, credentials):
+        if not auth_id and refresh_token:
+            logging.info("Refresh token loaded from state file")
 
-        # get file path of the table (data/out/tables/Features.csv)
-        out_table_path = table.full_path
-        logging.info(out_table_path)
+        elif refresh_token and auth_id == credentials.get("id", ""):
+            logging.info("Refresh token loaded from state file")
 
-        # Add timestamp column and save into out_table_path
-        input_table = input_tables[0]
-        with (open(input_table.full_path, 'r') as inp_file,
-              open(table.full_path, mode='wt', encoding='utf-8', newline='') as out_file):
-            reader = csv.DictReader(inp_file)
+        else:
+            refresh_token = encrypted_data["refresh_token"]
+            logging.info("Refresh token loaded from encrypted data")
 
-            columns = list(reader.fieldnames)
-            # append timestamp
-            columns.append('timestamp')
-
-            # write result with column added
-            writer = csv.DictWriter(out_file, fieldnames=columns)
-            writer.writeheader()
-            for in_row in reader:
-                in_row['timestamp'] = datetime.now().isoformat()
-                writer.writerow(in_row)
-
-        # Save table manifest (output.csv.manifest) from the Table definition
-        self.write_manifest(table)
-
-        # Write new state - will be available next run
-        self.write_state_file({"some_state_parameter": "value"})
-
-        # ####### EXAMPLE TO REMOVE END
+        return refresh_token
 
 
-"""
-        Main entrypoint
-"""
 if __name__ == "__main__":
     try:
         comp = Component()
-        # this triggers the run method by default and is controlled by the configuration.action parameter
         comp.execute_action()
     except UserException as exc:
         logging.exception(exc)

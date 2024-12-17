@@ -1,19 +1,73 @@
 {
   "type": "object",
-  "title": "extractor configuration",
-  "required": [
-    "print_hello"
-  ],
+  "title": "Parameters",
   "properties": {
-    "print_hello": {
-      "type": "boolean",
-      "title": "Print Hello",
-      "propertyOrder": 1
+    "credentials": {
+      "type": "object",
+      "title": "Authorization",
+      "required": [
+        "xTenantId",
+        "username",
+        "#password",
+        "clientSecret"
+      ],
+      "properties": {
+        "xTenantId": {
+          "type": "string",
+          "title": "X-TenantID",
+          "options": {
+            "tooltip": "Fill your X-TenantID. If the login URL for your FranConnect system is https://developers.franconnectdemo.net/fc, then the X-TenantID will be developers.franconnectdemo.net"
+          }
+        },
+        "username": {
+          "type": "string",
+          "title": "Username",
+          "options": {
+            "tooltip": "Enter the Client ID provided to you by FranConnect in the Client ID field. Example: Client ID can be \"FRANC0NN3CT_API\"."
+          }
+        },
+        "#password": {
+          "type": "string",
+          "title": "Password",
+          "format": "password",
+          "description": ""
+        },
+        "clientSecret": {
+          "type": "string",
+          "title": "Client Secret",
+          "description": "Enter the Client Secret provided to you by FranConnect in the Client Secret field. Example: Client Secret can be \"DDEEMVOE2L0O1P9E\". Contact helpdesk@franconnect.com to get your Client ID and Client Secret."
+        }
+      }
     },
-    "debug": {
-      "type": "boolean",
-      "title": "Debug",
-      "propertyOrder": 2
+    "retrieveSettings": {
+      "type": "object",
+      "title": "Retrieve Settings",
+      "description": "Settings for data retrival endpoint of Info Manager module.",
+      "properties": {
+        "module": {
+          "type": "string",
+          "title": "Module",
+          "description": "Module name"
+        },
+        "subModule": {
+          "type": "string",
+          "title": "Sub Module",
+          "description": "Sub Module name"
+        },
+        "filterXML": {
+          "type": "string",
+          "title": "Filter XML",
+          "format": "editor",
+          "options": {
+            "editor": {
+              "mode": "application/xml",
+              "lineNumbers": true,
+              "lint": true
+            }
+          },
+          "description": "XML structure for data filtering"
+        }
+      }
     }
   }
 }
