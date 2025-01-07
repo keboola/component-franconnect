@@ -39,9 +39,8 @@ class Component(ComponentBase):
     def _init_clients(self):
         x_tenant_id = self.user_credentials.get('xTenantId')
         login = self.user_credentials.get('login')
-        password = self.user_credentials.get('password')
         client_secret = self.user_credentials.get('clientSecret')
-        token_client = FranconnectTokenAPIClient(login, password, x_tenant_id, client_secret)
+        token_client = FranconnectTokenAPIClient(login, x_tenant_id, client_secret)
 
         authorization = self.configuration.config_data["authorization"]
         authorization_credentials = authorization["oauth_api"]["credentials"]

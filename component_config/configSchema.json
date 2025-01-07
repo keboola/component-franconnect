@@ -8,7 +8,6 @@
       "required": [
         "xTenantId",
         "username",
-        "#password",
         "clientSecret"
       ],
       "properties": {
@@ -26,13 +25,7 @@
             "tooltip": "Enter the Client ID provided to you by FranConnect in the Client ID field. Example: Client ID can be \"FRANC0NN3CT_API\"."
           }
         },
-        "#password": {
-          "type": "string",
-          "title": "Password",
-          "format": "password",
-          "description": ""
-        },
-        "clientSecret": {
+        "#clientSecret": {
           "type": "string",
           "title": "Client Secret",
           "description": "Enter the Client Secret provided to you by FranConnect in the Client Secret field. Example: Client Secret can be \"DDEEMVOE2L0O1P9E\". Contact helpdesk@franconnect.com to get your Client ID and Client Secret."

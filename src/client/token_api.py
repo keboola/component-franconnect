@@ -16,9 +16,8 @@ class FranconnectTokenAPIClientException(Exception):
 
 
 class FranconnectTokenAPIClient(HttpClient):
-    def __init__(self, username, password, client_id, client_secret):
+    def __init__(self, username, client_id, client_secret):
         self.username = username
-        self.password = password
         self.client_id = client_id
         self.client_secret = client_secret
 
@@ -33,9 +32,9 @@ class FranconnectTokenAPIClient(HttpClient):
             'Authorization': f"Basic {self.auth_b64}",
         }
         payload = {
-            'grant_type': 'password',
+            'grant_type': 'client_credentials',
             'username': self.username,
-            'password': self.password
+            'client_secret': self.client_secret
         }
 
         try:
