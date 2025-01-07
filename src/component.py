@@ -34,7 +34,17 @@ class Component(ComponentBase):
         """
         params = Configuration(**self.configuration.parameters) # noqa F841
         self._init_clients()
-        # TODO: dodělat run metodu
+
+        try:
+            response = self.retrieve_client.get_data_from_retrive_endpoint(
+                module=params.retrieve_settings.get('module'),
+                sub_module=params.retrieve_settings.get('subModule'),
+                xml_filter=params.retrieve_settings.get('filterXML')
+            )
+            logging.info(f"Data loaded from API: {response}")
+
+        except Exception as exc:
+            UserException(f"Error loading data from API: {exc}")
 
     def _init_clients(self):
         x_tenant_id = self.user_credentials.get('xTenantId')
