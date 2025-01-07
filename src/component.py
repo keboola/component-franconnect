@@ -37,9 +37,9 @@ class Component(ComponentBase):
 
         try:
             response = self.retrieve_client.get_data_from_retrive_endpoint(
-                module=params.retrieve_settings.get('module'),
-                sub_module=params.retrieve_settings.get('subModule'),
-                xml_filter=params.retrieve_settings.get('filterXML')
+                module=params.retrieve_settings.module,
+                sub_module=params.retrieve_settings.sub_module,
+                xml_filter=params.retrieve_settings.filter_xml
             )
             logging.info(f"Data loaded from API: {response}")
 
