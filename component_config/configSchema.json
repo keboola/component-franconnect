@@ -8,7 +8,7 @@
       "required": [
         "xTenantId",
         "username",
-        "clientSecret"
+        "#clientSecret"
       ],
       "properties": {
         "xTenantId": {
@@ -40,12 +40,14 @@
         "module": {
           "type": "string",
           "title": "Module",
-          "description": "Module name"
+          "description": "Module name",
+          "propertyOrder": 1
         },
         "subModule": {
           "type": "string",
           "title": "Sub Module",
-          "description": "Sub Module name"
+          "description": "Sub Module name",
+          "propertyOrder": 2
         },
         "filterXML": {
           "type": "string",
@@ -58,7 +60,8 @@
               "lint": true
             }
           },
-          "description": "XML structure for data filtering"
+          "description": "XML structure for data filtering",
+          "propertyOrder": 3
         }
       }
     }
