@@ -16,7 +16,7 @@ class RetrieveSettings(BaseModel):
 
 
 class Configuration(BaseModel):
-    credentials: Credentials
+    credentials: Credentials = Field(alias="credentials")
     retrieve_settings: RetrieveSettings = Field(alias="retrieveSettings")
 
     def __init__(self, **data):
