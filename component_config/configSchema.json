@@ -2,40 +2,10 @@
   "type": "object",
   "title": "Parameters",
   "properties": {
-    "credentials": {
-      "type": "object",
-      "title": "Authorization",
-      "required": [
-        "xTenantId",
-        "username",
-        "#clientSecret"
-      ],
-      "properties": {
-        "xTenantId": {
-          "type": "string",
-          "title": "X-TenantID",
-          "options": {
-            "tooltip": "Fill your X-TenantID. If the login URL for your FranConnect system is https://developers.franconnectdemo.net/fc, then the X-TenantID will be developers.franconnectdemo.net"
-          }
-        },
-        "username": {
-          "type": "string",
-          "title": "Username",
-          "options": {
-            "tooltip": "Enter the Client ID provided to you by FranConnect in the Client ID field. Example: Client ID can be \"FRANC0NN3CT_API\"."
-          }
-        },
-        "#clientSecret": {
-          "type": "string",
-          "title": "Client Secret",
-          "description": "Enter the Client Secret provided to you by FranConnect in the Client Secret field. Example: Client Secret can be \"DDEEMVOE2L0O1P9E\". Contact helpdesk@franconnect.com to get your Client ID and Client Secret."
-        }
-      }
-    },
     "retrieveSettings": {
       "type": "object",
       "title": "Retrieve Settings",
-      "description": "Settings for data retrival endpoint of Info Manager module.",
+      "description": "Settings for retrieve data from Info Manager module.",
       "properties": {
         "module": {
           "type": "string",

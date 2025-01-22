@@ -1,7 +1,7 @@
 from keboola.http_client import HttpClient
 
 
-RETRIEVE_ENDPOINT = "/fc/rest/dataservices/retrieve"
+RETRIEVE_ENDPOINT = "/rest/dataservices/retrieve"
 
 
 class InfoManagerAPIClientException(Exception):

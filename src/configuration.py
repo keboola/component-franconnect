@@ -4,7 +4,7 @@ from keboola.component.exceptions import UserException
 
 class Credentials(BaseModel):
     x_tenant_id: str = Field(alias="xTenantId")
-    username: str
+    client_id: str = Field(alias="clientId")
     client_secret: str = Field(alias="#clientSecret")
 
 
