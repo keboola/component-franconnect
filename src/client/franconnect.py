@@ -13,7 +13,7 @@ class FranConnectClient(HttpClient):
     def __init__(self, tenant_id, client_id, client_secret):
         super().__init__(base_url=f"https://{tenant_id}")
         token = self.get_auth_token(tenant_id, client_id, client_secret)
-        self.update_auth_header({"Authorization": f'Bearer {token}'})
+        self.update_auth_header({"Authorization": f"Bearer {token}"})
 
     def get_auth_token(self, tenant_id: str, client_id: str, client_secret: str):
         auth_str = f"{client_id}:{client_secret}"
@@ -56,13 +56,17 @@ class FranConnectClient(HttpClient):
                 endpoint_path=RETRIEVE_ENDPOINT,
                 data=data
             )
-            response_data = response.get("fcResponse", {}).get("responseData", {}).items()
-            _, response_data_vals = list(response_data)[0]
 
-            for record in response_data_vals:
-                yield record
+            try:
+                response_data = response.get("fcResponse", {}).get("responseData", {}).popitem()[1]
 
-            if response.get("fcResponse", {}).get("pagination", {}).get("hasMoreRecords") == "false":
-                break
+                for record in response_data:
+                    yield record
 
-            offset += BATCHE_SIZE
+                if response.get("fcResponse", {}).get("pagination", {}).get("hasMoreRecords") == "false":
+                    break
+
+                offset += BATCHE_SIZE
+
+            except KeyError as e:
+                raise Exception(f"No data returned: {e}")
