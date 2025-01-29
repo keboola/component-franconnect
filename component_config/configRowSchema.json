@@ -7,27 +7,8 @@
       "title": "Retrieve Settings",
       "description": "Settings for retrieve data from Info Manager module.",
       "properties": {
-        "columns": {
-          "type": "string",
-          "enum": [],
-          "title": "Columns to extract",
-          "format": "select",
-          "options": {
-            "tags": true,
-            "async": {
-              "label": "Re-load columns",
-              "action": "list_columns"
-            },
-            "dependencies": {
-              "mode": "select_columns"
-            }
-          },
-          "uniqueItems": true,
-          "propertyOrder": 34
-        },
         "module": {
           "title": "Module",
-          "description": "Module name",
           "type": "string",
           "format": "select",
           "enum": [],
@@ -42,7 +23,6 @@
         },
         "sub_module": {
           "title": "Sub Module",
-          "description": "Sub Module name",
           "type": "string",
           "format": "select",
           "enum": [],
@@ -103,7 +83,7 @@
           "type": "string",
           "title": "Table name",
           "default": "",
-          "description": "(Optional) Specify the table name (without the filetype) if you leave this field empty, the default name container_blob will be used.",
+          "description": "(Optional) Specify the table name (without the filetype) if you leave this field empty, the default name module_submodule will be used.",
           "options": {
             "dependencies": {
               "parquet_output": false

@@ -6,7 +6,7 @@ import logging
 
 from keboola.component.base import ComponentBase, sync_action
 from keboola.component.exceptions import UserException
-from keboola.component.sync_actions import SelectElement, ValidationResult, MessageType
+from keboola.component.sync_actions import SelectElement
 from keboola.csvwriter import ElasticDictWriter
 from requests import HTTPError
 
@@ -59,9 +59,8 @@ class Component(ComponentBase):
     def test_connection(self):
         try:
             self.init_client()
-            return ValidationResult(message="Connection successful", type=MessageType.SUCCESS)
         except HTTPError as e:
-            return ValidationResult(message=f"Connection failed: {e.response.text}", type=MessageType.DANGER)
+            raise UserException(f"Connection failed: {e.response.text}")
 
     @sync_action("list_modules")
     def list_modules(self):
@@ -73,7 +72,7 @@ class Component(ComponentBase):
     @sync_action("list_submodules")
     def list_submodules(self):
         self.init_client()
-        response = self.client.get_submodules("fim")
+        response = self.client.get_submodules(self.params.source.module)
         submodules = response.get("fcResponse", {}).get("responseData", {}).get("fcRequest", {})
         return [SelectElement(value, label) for value, label in submodules.items()]
 

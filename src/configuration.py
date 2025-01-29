@@ -15,9 +15,9 @@ class Credentials(BaseModel):
 
 
 class Source(BaseModel):
-    module: str
-    sub_module: str = Field()
-    filter_xml: str = Field()
+    module: str = Field(default=None)
+    sub_module: str = Field(default=None)
+    filter_xml: str = Field(default=None)
 
 
 class Destination(BaseModel):
@@ -31,8 +31,8 @@ class Destination(BaseModel):
 
 class Configuration(BaseModel):
     credentials: Credentials
-    source: Source
-    destination: Destination
+    source: Source = Field(default=None)
+    destination: Destination = Field(default=None)
     debug: bool = Field(title="Debug mode", default=False)
 
     def __init__(self, **data):
