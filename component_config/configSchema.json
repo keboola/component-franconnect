@@ -2,38 +2,39 @@
   "type": "object",
   "title": "Parameters",
   "properties": {
-    "retrieveSettings": {
+    "credentials": {
       "type": "object",
-      "title": "Retrieve Settings",
-      "description": "Settings for retrieve data from Info Manager module.",
+      "title": "Authorization",
+      "description": "Client credentials for OAuth 2.0",
+      "required": [
+        "tenant_id",
+        "client_id",
+        "#client_secret"
+      ],
       "properties": {
-        "module": {
+        "tenant_id": {
           "type": "string",
-          "title": "Module",
-          "description": "Module name",
-          "propertyOrder": 1
+          "title": "Tenant ID",
+          "description": "Tenant ID (X-TenantId) for example: john-bistro.franconnectuat.net",
+          "propertyOrder": 11
         },
-        "subModule": {
+        "client_id": {
           "type": "string",
-          "title": "Sub Module",
-          "description": "Sub Module name",
-          "propertyOrder": 2
+          "title": "Client ID",
+          "propertyOrder": 12
         },
-        "filterXML": {
+        "#client_secret": {
           "type": "string",
-          "title": "Filter XML",
-          "format": "editor",
-          "options": {
-            "editor": {
-              "mode": "application/xml",
-              "lineNumbers": true,
-              "lint": true
-            }
-          },
-          "description": "XML structure for data filtering",
-          "propertyOrder": 3
+          "title": "Client secret",
+          "format": "password",
+          "propertyOrder": 13
+        },
+        "test_connection": {
+          "type": "button",
+          "format": "test-connection"
         }
-      }
+      },
+      "propertyOrder": 1
     }
   }
 }
