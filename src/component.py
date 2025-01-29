@@ -61,7 +61,7 @@ class Component(ComponentBase):
             self.init_client()
             return ValidationResult(message="Connection successful", type=MessageType.SUCCESS)
         except HTTPError as e:
-            return ValidationResult(message=f"Connection failed: {e.response.text}", type=MessageType.DANGER)
+            return ValidationResult(message=f"Connection failed: {e.response.text}", type="error")
 
     @sync_action("list_modules")
     def list_modules(self):
@@ -73,7 +73,7 @@ class Component(ComponentBase):
     @sync_action("list_submodules")
     def list_submodules(self):
         self.init_client()
-        response = self.client.get_submodules("fim")
+        response = self.client.get_submodules(self.params.source.module)
         submodules = response.get("fcResponse", {}).get("responseData", {}).get("fcRequest", {})
         return [SelectElement(value, label) for value, label in submodules.items()]
 
