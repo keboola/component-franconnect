@@ -2,7 +2,6 @@
 Template Component main class.
 
 """
-import json
 import logging
 
 from keboola.component.base import ComponentBase, sync_action
