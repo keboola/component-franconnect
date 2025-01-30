@@ -1,51 +1,60 @@
 component-franconnect
 =============
 
-Description
-
-**Table of contents:**
-
-[TOC]
-
-Functionality notes
-===================
+A Keboola component for integrating with FranConnect, providing access to various modules and sub-modules with configurable data loading options.
 
 Prerequisites
 =============
 
-Get the API token, register application, etc.
+To use this component, you will need:
+- FranConnect tenant ID
+- Client ID
+- Client Secret
 
-Features
-========
+Configuration - component configuration level:
+=============
+## Credentials
+- tenant_id (Required) - Your FranConnect tenant identifier
+- client_id (Required) - OAuth client ID
+- client_secret (Required) - OAuth client secret (stored securely)
 
-| **Feature**             | **Note**                                      |
-|-------------------------|-----------------------------------------------|
-| Generic UI form         | Dynamic UI form                               |
-| Row Based configuration | Allows structuring the configuration in rows. |
-| oAuth                   | oAuth authentication enabled                  |
-| Incremental loading     | Allows fetching data in new increments.       |
-| Backfill mode           | Support for seamless backfill setup.          |
-| Date range filter       | Specify date range.                           |
-
-Supported endpoints
-===================
-
-If you need more endpoints, please submit your request to
-[ideas.keboola.com](https://ideas.keboola.com/)
-
-Configuration
+Configuration - configuration row level:
 =============
 
-Param 1
--------
+## Source Configuration
+- module (Required) - The main module to extract data from
+- sub_module (Required) - Specific sub-module within the main module
+- filter_xml (Required) - XML filter to apply to the data extraction
+
+## Destination Configuration
+- table_name - Name of the output table in Keboola
+- load_type - Type of load: "full_load" or "incremental_load"
+
+## Additional Settings
+- debug - Enable debug mode for troubleshooting (Default: false)
 
 Param 2
 -------
 
-Output
-======
-
-List of tables, foreign keys, schema.
+```json
+{
+  "credentials": {
+    "tenant_id": "your-tenant-id",
+    "client_id": "your-client-id",
+    "#client_secret": "your-client-secret"
+  },
+  "source": {
+    "module": "example-module",
+    "sub_module": "example-sub-module",
+    "filter_xml": "<filter></filter>"
+  },
+  "destination": {
+    "table_name": "my_output_table",
+    "load_type": "incremental_load"
+  },
+  "debug": false
+}
+```
 
 Development
 -----------

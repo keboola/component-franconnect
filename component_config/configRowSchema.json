@@ -1,1 +1,106 @@
-{}
+{
+  "type": "object",
+  "title": "Parameters",
+  "properties": {
+    "source": {
+      "type": "object",
+      "title": "Retrieve Settings",
+      "description": "Settings for retrieve data from Info Manager module.",
+      "properties": {
+        "module": {
+          "title": "Module",
+          "type": "string",
+          "format": "select",
+          "enum": [],
+          "options": {
+            "tags": true,
+            "async": {
+              "label": "Re-load modules",
+              "action": "list_modules"
+            }
+          },
+          "propertyOrder": 21
+        },
+        "sub_module": {
+          "title": "Sub Module",
+          "type": "string",
+          "format": "select",
+          "enum": [],
+          "options": {
+            "tags": true,
+            "async": {
+              "label": "Re-load submodules",
+              "action": "list_submodules"
+            }
+          },
+          "propertyOrder": 22
+        },
+        "filter_xml": {
+          "type": "string",
+          "title": "Filter XML",
+          "format": "editor",
+          "options": {
+            "editor": {
+              "mode": "application/xml",
+              "lineNumbers": true,
+              "lint": true
+            }
+          },
+          "description": "XML structure for data filtering",
+          "propertyOrder": 23
+        }
+      },
+      "propertyOrder": 2
+    },
+    "destination": {
+      "type": "object",
+      "title": "Destination",
+      "required": [
+        "load_type"
+      ],
+      "properties": {
+        "load_type": {
+          "enum": [
+            "incremental_load",
+            "full_load"
+          ],
+          "type": "string",
+          "title": "Load Type",
+          "default": "incremental_load",
+          "options": {
+            "enum_titles": [
+              "Incremental Load",
+              "Full Load"
+            ],
+            "dependencies": {
+              "parquet_output": false
+            }
+          },
+          "description": "If Full load is used, the destination table will be overwritten every run. If Incremental Load is used, data will be upserted into the destination table based on the primary key. Append modes do not contain any primary keys and are not deduplicated.",
+          "propertyOrder": 31
+        },
+        "table_name": {
+          "type": "string",
+          "title": "Table name",
+          "default": "",
+          "description": "(Optional) Specify the table name (without the filetype) if you leave this field empty, the default name module_submodule will be used.",
+          "options": {
+            "dependencies": {
+              "parquet_output": false
+            }
+          },
+          "propertyOrder": 32
+        }
+      },
+      "propertyOrder": 3
+    },
+    "debug": {
+      "type": "boolean",
+      "title": "Debug mode",
+      "format": "checkbox",
+      "default": false,
+      "description": "If enabled, the component will produce detailed logs",
+      "propertyOrder": 4
+    }
+  }
+}

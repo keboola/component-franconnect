@@ -2,59 +2,79 @@
 Template Component main class.
 
 """
-import json  # noqa F401
 import logging
 
-from keboola.component.base import ComponentBase
+from keboola.component.base import ComponentBase, sync_action
 from keboola.component.exceptions import UserException
+from keboola.component.sync_actions import SelectElement
+from keboola.csvwriter import ElasticDictWriter
+from requests import HTTPError
 
-from client.token_api import FranconnectTokenAPIClient
-from client.info_manager_api import InfoManagerAPIClient
+from client.franconnect import FranConnectClient
 from configuration import Configuration
-
-
-KEY_CREDENTIALS = 'credentials'
-KEY_RETRIEVE_SETTINGS = 'retrieveSettings'
-REQUIRED_PARAMETERS = []
 
 
 class Component(ComponentBase):
     def __init__(self):
         super().__init__()
-
-        self.validate_configuration_parameters(REQUIRED_PARAMETERS)
-
-        params = Configuration(**self.configuration.parameters)
-        self.user_credentials = params.credentials
-        self.retrieve_settings = params.retrieve_settings
+        self.params = Configuration(**self.configuration.parameters)
+        self.client = None
 
     def run(self) -> None:
         """
         Main execution code
         """
-        self._init_clients()
+        self.init_client()
 
         try:
-            response = self.retrieve_client.get_data_from_retrive_endpoint(
-                module=self.retrieve_settings.module,
-                sub_module=self.retrieve_settings.sub_module,
-                xml_filter=self.retrieve_settings.filter_xml
+            endpoint_data = self.client.get_data_from_retrive_endpoint(
+                module=self.params.source.module,
+                sub_module=self.params.source.sub_module,
+                xml_filter=self.params.source.filter_xml
             )
-            logging.info(f"Data loaded from API: {response}")
 
-        except Exception as exc:
-            UserException(f"Error loading data from API: {exc}")
+            table_name = self.params.destination.table_name or (f"{self.params.source.module}"
+                                                                f"_{self.params.source.sub_module}")
 
-    def _init_clients(self) -> None:
-        x_tenant_id = self.user_credentials.x_tenant_id
-        client_id = self.user_credentials.client_id
-        client_secret = self.user_credentials.client_secret
-        token_client = FranconnectTokenAPIClient(x_tenant_id, client_id, client_secret)
-        new_access_token, new_refresh_token = token_client.generate_access_token()
-        self.write_state_file({
-            "#refresh_token": new_refresh_token
-        })
-        self.retrieve_client = InfoManagerAPIClient(x_tenant_id, new_access_token)
+            out_table = self.create_out_table_definition(f"{table_name}.csv", has_header=True)
+
+            writer = ElasticDictWriter(out_table.full_path, [])
+
+            for row in endpoint_data:
+                writer.writerow(row)
+
+            writer.writeheader()
+            writer.close()
+            out_table.schema = writer.fieldnames
+            self.write_manifest(out_table)
+
+        except Exception as e:
+            UserException(f"Error downloading the endpoint: {e}")
+
+    def init_client(self):
+        self.client = FranConnectClient(self.params.credentials.tenant_id, self.params.credentials.client_id,
+                                        self.params.credentials.client_secret)
+
+    @sync_action("testConnection")
+    def test_connection(self):
+        try:
+            self.init_client()
+        except HTTPError as e:
+            raise UserException(f"Connection failed: {e.response.text}")
+
+    @sync_action("list_modules")
+    def list_modules(self):
+        self.init_client()
+        response = self.client.get_modules()
+        modules = response.get("fcResponse", {}).get("responseData", {}).get("fcRequest", {})
+        return [SelectElement(value, label) for value, label in modules.items()]
+
+    @sync_action("list_submodules")
+    def list_submodules(self):
+        self.init_client()
+        response = self.client.get_submodules(self.params.source.module)
+        submodules = response.get("fcResponse", {}).get("responseData", {}).get("fcRequest", {})
+        return [SelectElement(value, label) for value, label in submodules.items()]
 
 
 if __name__ == "__main__":
