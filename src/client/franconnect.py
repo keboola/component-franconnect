@@ -59,7 +59,8 @@ class FranConnectClient(HttpClient):
             )
 
             if response.get("fcResponse", {}).get("responseStatus") != "Success":
-                raise UserException(f"Failed to retrieve data: {response.get('fcResponse', {}).get('error', {}).get('errorDetails')}")
+                raise UserException(
+                    f"Failed to retrieve data: {response.get('fcResponse', {}).get('error', {}).get('errorDetails')}")
 
             try:
                 response_data = response.get("fcResponse", {}).get("responseData", {}).popitem()[1]
