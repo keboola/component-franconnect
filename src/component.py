@@ -49,7 +49,7 @@ class Component(ComponentBase):
             self.write_manifest(out_table)
 
         except Exception as e:
-            UserException(f"Error downloading the endpoint: {e}")
+            raise UserException(f"Error downloading the endpoint: {e}")
 
     def init_client(self):
         self.client = FranConnectClient(self.params.credentials.tenant_id, self.params.credentials.client_id,

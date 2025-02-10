@@ -1,5 +1,6 @@
 import base64
 from keboola.http_client import HttpClient
+from keboola.component.exceptions import UserException
 
 MODULES_ENDPOINT = "fc/rest/dataservices/module"
 SUBMODULES_ENDPOINT = "fc/rest/dataservices/submodule"
@@ -57,8 +58,15 @@ class FranConnectClient(HttpClient):
                 data=data
             )
 
+            if response.get("fcResponse", {}).get("responseStatus") != "Success":
+                raise UserException(
+                    f"Failed to retrieve data: {response.get('fcResponse', {}).get('error', {}).get('errorDetails')}")
+
             try:
                 response_data = response.get("fcResponse", {}).get("responseData", {}).popitem()[1]
+
+                if isinstance(response_data, dict):
+                    response_data = [response_data]
 
                 for record in response_data:
                     yield record
