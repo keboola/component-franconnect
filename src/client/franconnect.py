@@ -22,7 +22,7 @@ class FranConnectClient(HttpClient):
         headers = {"Authorization": f"Basic {basic_auth}"}
 
         response = self.post(
-            endpoint_path="https://auth.franconnectuat.net/userauth/oauth/token",
+            endpoint_path="https://auth.franconnect.net/userauth/oauth/token",
             headers=headers,
             data={"grant_type": "client_credentials", "X-TenantID": tenant_id},
             is_absolute_path=True
