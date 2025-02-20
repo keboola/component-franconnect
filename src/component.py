@@ -41,7 +41,7 @@ class Component(ComponentBase):
             writer = ElasticDictWriter(out_table.full_path, [])
 
             for row in endpoint_data:
-                if self.params.source.module == "fim" and self.params.source.sub_module == "agreement":
+                if self.params.source.module == "fim" and self.params.source.sub_module in ["agreement", "termination"]:
                     flattened_row = {}
                     for key, value in row.items():
                         if isinstance(value, dict):
