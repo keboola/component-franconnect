@@ -2,6 +2,7 @@ from enum import Enum
 from pydantic import BaseModel, Field, ValidationError, computed_field
 from keboola.component.exceptions import UserException
 
+default_auth_endpoint = "https://auth.franconnect.net/userauth/oauth/token"
 
 class LoadType(str, Enum):
     full_load = "full_load"
@@ -12,6 +13,7 @@ class Credentials(BaseModel):
     tenant_id: str = Field()
     client_id: str = Field()
     client_secret: str = Field(alias="#client_secret")
+    auth_endpoint: str = Field(default=default_auth_endpoint)
 
 
 class Source(BaseModel):

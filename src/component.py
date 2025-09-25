@@ -63,7 +63,7 @@ class Component(ComponentBase):
 
     def init_client(self):
         self.client = FranConnectClient(self.params.credentials.tenant_id, self.params.credentials.client_id,
-                                        self.params.credentials.client_secret)
+                                        self.params.credentials.client_secret, self.params.credentials.auth_endpoint)
 
     @sync_action("testConnection")
     def test_connection(self):

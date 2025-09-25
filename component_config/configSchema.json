@@ -29,6 +29,13 @@
           "format": "password",
           "propertyOrder": 13
         },
+        "auth_endpoint": {
+          "type": "string",
+          "title": "Auth Endpoint",
+          "description": "Auth endpoint for FranConnect Credentials",
+          "default": "https://auth.franconnect.net/userauth/oauth/token",
+          "propertyOrder": 14
+        },
         "test_connection": {
           "type": "button",
           "format": "test-connection"
