@@ -4,6 +4,7 @@ from keboola.component.exceptions import UserException
 
 default_auth_endpoint = "https://auth.franconnect.net/userauth/oauth/token"
 
+
 class LoadType(str, Enum):
     full_load = "full_load"
     incremental_load = "incremental_load"
