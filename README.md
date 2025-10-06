@@ -17,6 +17,7 @@ Configuration - component configuration level:
 - tenant_id (Required) - Your FranConnect tenant identifier
 - client_id (Required) - OAuth client ID
 - client_secret (Required) - OAuth client secret (stored securely)
+- auth_endpoint (Optional) - FranConnect authentication endpoint (Default: https://auth.franconnect.net/userauth/oauth/token)
 
 Configuration - configuration row level:
 =============

@@ -11,18 +11,18 @@ BATCHE_SIZE = 100
 
 class FranConnectClient(HttpClient):
 
-    def __init__(self, tenant_id, client_id, client_secret):
+    def __init__(self, tenant_id, client_id, client_secret, auth_endpoint):
         super().__init__(base_url=f"https://{tenant_id}")
-        token = self.get_auth_token(tenant_id, client_id, client_secret)
+        token = self.get_auth_token(tenant_id, client_id, client_secret, auth_endpoint)
         self.update_auth_header({"Authorization": f"Bearer {token}"})
 
-    def get_auth_token(self, tenant_id: str, client_id: str, client_secret: str):
+    def get_auth_token(self, tenant_id: str, client_id: str, client_secret: str, auth_endpoint: str):
         auth_str = f"{client_id}:{client_secret}"
         basic_auth = base64.b64encode(auth_str.encode()).decode()
         headers = {"Authorization": f"Basic {basic_auth}"}
 
         response = self.post(
-            endpoint_path="https://auth.franconnect.net/userauth/oauth/token",
+            endpoint_path=auth_endpoint,
             headers=headers,
             data={"grant_type": "client_credentials", "X-TenantID": tenant_id},
             is_absolute_path=True
